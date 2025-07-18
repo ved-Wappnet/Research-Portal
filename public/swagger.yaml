@@ -1,0 +1,182 @@
+openapi: 3.0.0
+info:
+  title: Research Portal Auth API
+  version: 1.0.0
+  description: API documentation for authentication endpoints.
+
+paths:
+  /api/register:
+    post:
+      summary: User Registration
+      description: Register a new user.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - role
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                role:
+                  type: integer
+                  description: Numeric role (0=author, 1=reviewer, 2=editor)
+                  example: 0
+                institution:
+                  type: string
+                  example: "Research University"
+      responses:
+        '201':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "60c72b2f9b1e8e5d6c8e4f1b"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      role:
+                        type: integer
+                        example: 0
+                      institution:
+                        type: string
+                        example: "Research University"
+                  message:
+                    type: string
+                    example: "Registration successful!"
+        '400':
+          description: Missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required fields."
+        '409':
+          description: Email already registered.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Email already registered."
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Registration failed."
+  /api/login:
+    post:
+      summary: User Login
+      description: Authenticates a user and returns user data.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: User authenticated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "60c72b2f9b1e8e5d6c8e4f1b"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      role:
+                        type: integer
+                        example: 0
+                      institution:
+                        type: string
+                        example: "Research University"
+        '400':
+          description: Missing email or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing email or password."
+        '401':
+          description: Invalid email or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid email or password."
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Login failed."
