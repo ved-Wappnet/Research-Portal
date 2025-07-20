@@ -20,7 +20,7 @@ export async function GET(req) {
     }
     // Ensure all relevant fields are returned
     const {
-      _id, name, email, role, institution, avatar, bio, website, orcid, createdAt, updatedAt
+      _id, name, email, role, institution, avatar, bio, website, orcid, researchInterests, position, education, createdAt, updatedAt
     } = user;
     return NextResponse.json({
       user: {
@@ -33,6 +33,9 @@ export async function GET(req) {
         bio: bio || '',
         website: website || '',
         orcid: orcid || '',
+        researchInterests: researchInterests || [],
+        position: position || '',
+        education: education || [],
         createdAt,
         updatedAt,
       }
@@ -47,7 +50,7 @@ export async function GET(req) {
 export async function PUT(req) {
   try {
     const body = await req.json();
-    const { id, name, institution, avatar, bio, website, orcid } = body;
+    const { id, name, institution, avatar, bio, website, orcid, researchInterests, position, education } = body;
     if (!id) {
       return NextResponse.json({ error: 'User ID required' }, { status: 400 });
     }
@@ -55,7 +58,7 @@ export async function PUT(req) {
     console.log('PUT /api/profile payload:', body);
     const user = await User.findByIdAndUpdate(
       id,
-      { $set: { name, institution, avatar, bio, website, orcid } },
+      { $set: { name, institution, avatar, bio, website, orcid, researchInterests, position, education } },
       { new: true, runValidators: true, select: '-password' }
     );
     console.log('Updated user:', user);

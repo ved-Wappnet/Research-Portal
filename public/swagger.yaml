@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: Research Portal Auth API
-  version: 1.0.0
-  description: API documentation for authentication endpoints.
+  title: Research Portal API
+  version: 1.1.0
+  description: API documentation for Research Portal.
 
 paths:
   /api/register:
@@ -42,7 +42,7 @@ paths:
                   type: string
                   example: "Research University"
       responses:
-        '201':
+        "201":
           description: User registered successfully.
           content:
             application/json:
@@ -70,7 +70,7 @@ paths:
                   message:
                     type: string
                     example: "Registration successful!"
-        '400':
+        "400":
           description: Missing or invalid fields.
           content:
             application/json:
@@ -80,7 +80,7 @@ paths:
                   error:
                     type: string
                     example: "Missing required fields."
-        '409':
+        "409":
           description: Email already registered.
           content:
             application/json:
@@ -90,7 +90,7 @@ paths:
                   error:
                     type: string
                     example: "Email already registered."
-        '500':
+        "500":
           description: Internal server error.
           content:
             application/json:
@@ -100,6 +100,7 @@ paths:
                   error:
                     type: string
                     example: "Registration failed."
+
   /api/login:
     post:
       summary: User Login
@@ -125,7 +126,7 @@ paths:
                   format: password
                   example: password123
       responses:
-        '200':
+        "200":
           description: User authenticated successfully.
           content:
             application/json:
@@ -150,7 +151,7 @@ paths:
                       institution:
                         type: string
                         example: "Research University"
-        '400':
+        "400":
           description: Missing email or password.
           content:
             application/json:
@@ -160,7 +161,7 @@ paths:
                   error:
                     type: string
                     example: "Missing email or password."
-        '401':
+        "401":
           description: Invalid email or password.
           content:
             application/json:
@@ -170,7 +171,7 @@ paths:
                   error:
                     type: string
                     example: "Invalid email or password."
-        '500':
+        "500":
           description: Internal server error.
           content:
             application/json:
@@ -180,3 +181,243 @@ paths:
                   error:
                     type: string
                     example: "Login failed."
+
+  /api/profile:
+    get:
+      summary: Get User Profile
+      description: Returns the profile information for the authenticated user.
+      tags:
+        - Profile
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: User ID
+      responses:
+        "200":
+          description: User profile data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "60c72b2f9b1e8e5d6c8e4f1b"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      role:
+                        type: integer
+                        example: 0
+                      institution:
+                        type: string
+                        example: "Research University"
+                      avatar:
+                        type: string
+                        example: "/avatars/johndoe.png"
+                      bio:
+                        type: string
+                        example: "Researcher in AI and ML."
+                      website:
+                        type: string
+                        example: "https://johndoe.com"
+                      orcid:
+                        type: string
+                        example: "0000-0002-1825-0097"
+                      researchInterests:
+                        type: array
+                        items:
+                          type: string
+                        example: ["machine learning", "cybersecurity"]
+                      position:
+                        type: string
+                        example: "Senior Research Scientist"
+                      education:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            degree:
+                              type: string
+                              example: "PhD"
+                            institution:
+                              type: string
+                              example: "MIT"
+                            year:
+                              type: string
+                              example: "2022"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2023-01-01T00:00:00Z"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2023-06-01T00:00:00Z"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found."
+
+    put:
+      summary: Update User Profile
+      description: Updates the profile information for the authenticated user.
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  description: User ID
+                  example: "60c72b2f9b1e8e5d6c8e4f1b"
+                name:
+                  type: string
+                  example: "John Doe"
+                institution:
+                  type: string
+                  example: "Research University"
+                avatar:
+                  type: string
+                  example: "/avatars/johndoe.png"
+                bio:
+                  type: string
+                  example: "Researcher in AI and ML."
+                website:
+                  type: string
+                  example: "https://johndoe.com"
+                orcid:
+                  type: string
+                  example: "0000-0002-1825-0097"
+                researchInterests:
+                  type: array
+                  items:
+                    type: string
+                  example: ["machine learning", "cybersecurity"]
+                position:
+                  type: string
+                  example: "Senior Research Scientist"
+                education:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      degree:
+                        type: string
+                        example: "PhD"
+                      institution:
+                        type: string
+                        example: "MIT"
+                      year:
+                        type: string
+                        example: "2022"
+      responses:
+        "200":
+          description: Profile updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "60c72b2f9b1e8e5d6c8e4f1b"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      role:
+                        type: integer
+                        example: 0
+                      institution:
+                        type: string
+                        example: "Research University"
+                      avatar:
+                        type: string
+                        example: "/avatars/johndoe.png"
+                      bio:
+                        type: string
+                        example: "Researcher in AI and ML."
+                      website:
+                        type: string
+                        example: "https://johndoe.com"
+                      orcid:
+                        type: string
+                        example: "0000-0002-1825-0097"
+                      researchInterests:
+                        type: array
+                        items:
+                          type: string
+                        example: ["machine learning", "cybersecurity"]
+                      position:
+                        type: string
+                        example: "Senior Research Scientist"
+                      education:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            degree:
+                              type: string
+                              example: "PhD"
+                            institution:
+                              type: string
+                              example: "MIT"
+                            year:
+                              type: string
+                              example: "2022"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2023-01-01T00:00:00Z"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2023-06-01T00:00:00Z"
+        "400":
+          description: Invalid input data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid profile data."
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found."
+  

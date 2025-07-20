@@ -12,6 +12,9 @@ export interface UpdateProfileRequest {
   bio?: string;
   website?: string;
   orcid?: string;
+  researchInterests?: string[];
+  position?: string;
+  education?: { degree: string; institution: string; year: string }[];
 }
 
 export interface ProfileResponse {
@@ -25,6 +28,9 @@ export interface ProfileResponse {
     bio?: string;
     website?: string;
     orcid?: string;
+    researchInterests?: string[];
+    position?: string;
+    education?: { degree: string; institution: string; year: string }[];
     createdAt?: string;
     updatedAt?: string;
   };

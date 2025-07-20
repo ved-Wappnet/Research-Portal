@@ -17,6 +17,13 @@ const userSchema = new mongoose.Schema({
   bio: { type: String },
   website: { type: String },
   orcid: { type: String },
+  researchInterests: [{ type: String }],
+  position: { type: String },
+  education: [{
+    degree: { type: String },
+    institution: { type: String },
+    year: { type: String }
+  }]
 }, { timestamps: true });
 
 // Virtual 'id' field that mirrors _id
