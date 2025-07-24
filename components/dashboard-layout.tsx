@@ -86,6 +86,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navItems = getNavItems()
 
+  // Function to get role name from role number
+  const getRoleName = (role: number): string => {
+    switch(role) {
+      case 0: return 'Author';
+      case 1: return 'Reviewer';
+      case 2: return 'Editor';
+      default: return 'User';
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
@@ -98,7 +108,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <span className="text-xl font-bold text-primary">Research Portal</span>
               </Link>
               <Badge variant="secondary" className="capitalize">
-                {user.role}
+                {getRoleName(user.role)}
               </Badge>
             </div>
 

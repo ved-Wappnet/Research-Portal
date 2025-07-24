@@ -40,16 +40,21 @@ export const profileApi = api.injectEndpoints({
   endpoints: (build) => ({
     getProfile: build.query<ProfileResponse, GetProfileRequest>({
       query: ({ id }) => ({
-        url: `profile?id=${id}`,
+        url: `profile/${id}`,
         method: 'GET',
       }),
+      providesTags: (result, error, arg) => [{ type: 'Profile', id: arg.id }],
     }),
     updateProfile: build.mutation<ProfileResponse, UpdateProfileRequest>({
-      query: (body) => ({
-        url: 'profile',
-        method: 'PUT',
-        body,
-      }),
+      query: (body) => {
+        const { id, ...updateData } = body;
+        return {
+          url: `profile/${id}`,
+          method: 'PUT',
+          body: updateData,
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'Profile', id: arg.id }]
     }),
   }),
 });

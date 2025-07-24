@@ -4,4 +4,5 @@ export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/' }),
   endpoints: () => ({}),
+  tagTypes: ['Profile'],
 });

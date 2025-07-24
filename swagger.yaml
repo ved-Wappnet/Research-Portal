@@ -1,11 +1,133 @@
 openapi: 3.0.0
 info:
-  title: Research Portal Auth & Profile API
-  version: 1.1.0
-  description: API documentation for authentication and user profile endpoints.
+  title: Research Portal API
+  version: 1.3.0
+  description: API documentation for Research Portal, including authentication and user profile management.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
 
 paths:
-  /api/login:
+  /profile/{id}:
+    get:
+      summary: Get user profile
+      description: Retrieves the profile information for a specific user.
+      tags:
+        - Profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User's unique identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            example: 7f415d8b-ab30-473a-8384-08bc36a24351
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/UserProfile'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    put:
+      summary: Update user profile
+      description: Updates the profile information for a specific user.
+      tags:
+        - Profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User's unique identifier (UUID)
+          schema:
+            type: string
+            format: uuid
+            example: 7f415d8b-ab30-473a-8384-08bc36a24351
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Profile updated successfully"
+                  user:
+                    $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /health:
+    get:
+      summary: Health check
+      description: Check if the API is running
+      tags:
+        - System
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2025-07-24T11:00:00.000Z"
+
+  /login:
     post:
       summary: User Login
       description: Authenticates a user and returns user data.
@@ -85,3 +207,152 @@ paths:
                   error:
                     type: string
                     example: "Login failed."
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Use JWT token for authorization
+      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "7f415d8b-ab30-473a-8384-08bc36a24351"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        role:
+          type: integer
+          enum: [0, 1, 2]
+          description: "0=Author, 1=Reviewer, 2=Editor"
+          example: 0
+        institution:
+          type: string
+          example: "Research University"
+        avatar:
+          type: string
+          example: "https://example.com/avatar.jpg"
+        bio:
+          type: string
+          example: "Professional researcher in the field of computer science."
+        website:
+          type: string
+          format: uri
+          example: "https://example.com"
+        orcid:
+          type: string
+          example: "0000-0002-1825-0097"
+        researchInterests:
+          type: array
+          items:
+            type: string
+          example: ["Machine Learning", "Artificial Intelligence"]
+        position:
+          type: string
+          example: "Senior Researcher"
+        education:
+          type: array
+          items:
+            type: object
+            properties:
+              degree:
+                type: string
+                example: "PhD in Computer Science"
+              institution:
+                type: string
+                example: "Stanford University"
+              year:
+                type: string
+                example: "2020"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-06-20T14:45:00Z"
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "John Doe Updated"
+        institution:
+          type: string
+          example: "Updated University"
+        avatar:
+          type: string
+          example: "https://example.com/new-avatar.jpg"
+        bio:
+          type: string
+          example: "Updated bio information."
+        website:
+          type: string
+          format: uri
+          example: "https://updated-example.com"
+        orcid:
+          type: string
+          example: "0000-0002-1825-0098"
+        researchInterests:
+          type: array
+          items:
+            type: string
+          example: ["Machine Learning", "AI Ethics"]
+        position:
+          type: string
+          example: "Lead Researcher"
+        education:
+          type: array
+          items:
+            type: object
+            properties:
+              degree:
+                type: string
+                example: "PhD in Computer Science"
+              institution:
+                type: string
+                example: "MIT"
+              year:
+                type: string
+                example: "2021"
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message describing the issue"
+        details:
+          type: string
+          description: "Detailed error information (only in development)"
+          example: "Detailed error stack trace or information"
+    
+    ApiErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message describing the issue"
+        details:
+          type: string
+          description: "Detailed error information (only in development)"
+          example: "Detailed error stack trace or information"

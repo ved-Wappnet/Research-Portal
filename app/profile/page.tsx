@@ -67,14 +67,12 @@ export default function ProfilePage() {
     _newInterest: "",
   });
   const userId = user?.id || user?._id;
-  console.log("user", user);
-  console.log("userId", userId);
   const [updateProfile, { isLoading: saving }] = useUpdateProfileMutation();
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Only fetch profile if userId exists
-  const { data, isLoading, isFetching, error, refetch } = useGetProfileQuery(
+  const { data, isLoading, isFetching } = useGetProfileQuery(
     userId ? { id: userId } : skipToken,
     { skip: !userId }
   );
@@ -106,13 +104,8 @@ export default function ProfilePage() {
         _newInterest: "",
       });
       setFetchError(null);
-    } else if (error) {
-      setFetchError(
-        (error as any)?.data?.error ||
-          (typeof error === "string" ? error : "Failed to fetch profile.")
-      );
-    }
-  }, [data, error]);
+    } 
+  }, [data]);
 
   const handleSave = async () => {
     const userId = user?.id || user?._id;
@@ -128,7 +121,7 @@ export default function ProfilePage() {
         id: userId,
         ...toSave,
       }).unwrap();
-      refetch();
+
     } catch (error: any) {
       console.error("Error saving profile:", error);
       setUpdateError(
@@ -197,9 +190,7 @@ export default function ProfilePage() {
               <span className="block sm:inline">{fetchError}</span>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => refetch()}>
-                Retry
-              </Button>
+           
               <Button
                 size="sm"
                 variant="ghost"
